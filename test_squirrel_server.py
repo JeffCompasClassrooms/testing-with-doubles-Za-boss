@@ -94,8 +94,6 @@ def mock_response_methods(mocker):
     return mock_send_response, mock_send_header, mock_end_headers
 
 
-#tests begin here. Your tests should look wildly different. 
-# you should begin testing where it makes sense to you.
 def describe_SquirrelServerHandler():
 
     def describe_retrieve_squirrels_functionality():
@@ -165,4 +163,30 @@ def describe_SquirrelServerHandler():
 
             #assert the thing was done.
             mock_db_create_squirrel.assert_called_once_with('Chippy','small')
+    
+    def describe_squirrel_handlers():
 
+        def describe_handles_squirrels_index():
+            @todo
+            def it_returns_squirrel_list():
+                pass
+        def describe_handles_squirrel_retrieve():
+            @todo
+            def it_template():
+                pass
+        def describe_handles_squirrel_create():
+            @todo
+            def it_template():
+                pass
+        def describe_handles_squirrel_update():
+            @todo
+            def it_template():
+                pass
+        def describe_handles_squirrel_delete():
+            @todo
+            def it_template():
+                pass
+        def describe_handles_squirrel_404():
+            @todo
+            def it_template():
+                pass
