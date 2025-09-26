@@ -63,7 +63,7 @@ def describe_MyDB():
             mock_dump_func.assert_not_called()
     
     def describe_load_strings():
-        def it_loads_an_array_from_a_file_and_returns_it_str(mock_load, mock_open_func):
+        def it_loads_an_array_from_a_file_and_returns_it_str(mock_isfile_true, mock_load, mock_open_func):
             
             mock_load.return_value = ["5", "5we"]
 
@@ -74,8 +74,8 @@ def describe_MyDB():
             mock_load.assert_called_once_with(mock_open_func())
 
             assert result == ["5", "5we"]
-        def it_loads_an_array_from_a_file_and_returns_it_int(mock_load, mock_open_func):
-            mock_load.return_value = [5, 1234]
+        def it_loads_an_array_from_a_file_and_returns_it_int(mock_isfile_true, mock_load, mock_open_func, mock_dump_func):
+            mock_load.return_value = ['5', '1234']
 
             db = MyDB("mydatabase.db")
             assert db.fname == "mydatabase.db"
@@ -83,31 +83,44 @@ def describe_MyDB():
 
             mock_load.assert_called_once_with(mock_open_func())
 
-            assert result == [5, 1234]
+            assert result == ['5', '1234']
 
     def describe_save_strings():
-        def it_saves_the_given_array_to_a_file(mock_dump_func, mock_open_func):
+        def it_saves_the_given_array_to_a_file(mock_isfile_true, mock_dump_func, mock_open_func):
             db = MyDB("mydatabase.db")
             assert db.fname == "mydatabase.db"
             db.saveStrings(["use", "no"])
 
-            assert mock_dump_func.call_count == 2
-            assert mock_open_func.call_count == 2
-        def it_writes_multiple_times(mock_dump_func, mock_open_func):
+            assert mock_dump_func.call_count == 1
+            assert mock_open_func.call_count == 1
+            assert mock_dump_func.call_args_list == [call(["use", "no"], mock_open_func())]
+        
+        def it_writes_multiple_times(mock_isfile_true, mock_dump_func, mock_open_func):
             db = MyDB("mydatabase.db")
             assert db.fname == "mydatabase.db"
             db.saveStrings(["use", "no"])
             db.saveStrings(["second", "save"])
 
-            assert mock_dump_func.call_count == 3
-            assert mock_open_func.call_count == 3
+            assert mock_dump_func.call_count == 2
+            assert mock_open_func.call_count == 2
+            assert mock_dump_func.call_args_list == [call(["use", "no"], mock_open_func()), call(["second", "save"], mock_open_func())]
     
     def describe_save_string():
-        def it_writes_string_element_to_existing_database(mock_dump_func, mock_open_func, mock_load):
+        def it_writes_string_element_to_existing_database(mock_isfile_true, mock_dump_func, mock_open_func, mock_load):
             db = MyDB("mydatabase.db")
             assert db.fname == "mydatabase.db"
             db.saveString("Hello")
 
-            assert mock_open_func.call_count == 3
+            assert mock_open_func.call_count == 2
             assert mock_load.call_count == 1
+            assert mock_dump_func.call_count == 1
+        def it_writes_multiple_string_elements_to_an_existing_database(mock_isfile_true, mock_dump_func, mock_open_func, mock_load):
+            db = MyDB("mydatabase.db")
+            assert db.fname == "mydatabase.db"
+            db.saveString("Hello")
+            db.saveString("Bye")
+
+            assert mock_open_func.call_count == 4
+            assert mock_load.call_count == 2
             assert mock_dump_func.call_count == 2
+            assert mock_dump_func.call_args_list == [call(["Hello", "Bye"], mock_open_func()), call(["Hello", "Bye"], mock_open_func())]
