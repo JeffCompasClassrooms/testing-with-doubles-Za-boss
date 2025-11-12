@@ -1,0 +1,21 @@
+name: Run Double Tests
+
+on:
+  push:
+    branches:
+      -main
+  pull_request:
+    branches:
+      -main
+
+jobs:
+  test:
+    runs_on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run Tests
+        run: pytest --spec
